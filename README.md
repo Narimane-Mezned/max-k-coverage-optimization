@@ -1,20 +1,112 @@
-Ce projet propose une suite d'outils pour résoudre le problème de la couverture maximale (Maximum K-Coverage), un défi classique d'optimisation combinatoire. Il permet de sélectionner un nombre limité de sites (k) pour couvrir un maximum de population ou de points d'intérêt.DescriptionL'objectif est de choisir au plus $k$ candidats parmi un ensemble pour maximiser la couverture totale. Ce projet implémente deux approches distinctes :Approche Exacte (MIP) : Utilise le solveur Gurobi pour trouver la solution mathématiquement optimale via la programmation linéaire en nombres entiers.Approche Heuristique (Greedy) : Un algorithme glouton rapide utilisant une structure de données KDTree pour une recherche spatiale efficace, idéal pour les grands jeux de données.Fonctionnalités principalesRésolution optimale avec Gurobi Optimizer.Approximation rapide avec un algorithme glouton (Greedy).Interface graphique (GUI) pour une interaction facilitée avec le solveur.Gestion de données spatiales (coordonnées de population et de candidats).Support pour le chargement de données via fichiers CSV.PrérequisAvant d'exécuter le projet, assurez-vous d'avoir :Gurobi Optimizer installé sur votre machine.Une licence Gurobi valide (Académique ou Commerciale).Python 3.8+ installé.InstallationCloner le dépôt :Bashgit clone https://github.com/Narimane-Mezned/max-k-coverage-optimization.git
-cd max-k-coverage-optimization
-Installer les dépendances :Bashpip install -r requirements.txt
-Note : Le fichier requirements.txt inclut gurobipy, scipy, numpy et pandas.Usage rapideInterface Graphique (GUI)Pour lancer l'application avec interface utilisateur :Bashpython src/gui_gurobi.py
-Utilisation programmatiqueSolution Exacte (Gurobi)Pythonfrom src.gurobi_maxkcover import solve_max_k_coverage
-# Utilise les données de population.csv et candidates.csv
-selected, coverage = solve_max_k_coverage(elements, sets, k=5)
-Solution Rapide (Greedy + KDTree)Pythonfrom src.greedy_fast import FastGreedyCoverage
-solver = FastGreedyCoverage(points, radius=0.5)
-selected_indices = solver.fit(k=5)
-Comparaison des méthodesCaractéristiqueGurobi (MIP)Greedy (KDTree)Précision100% (Optimal)Approximation (>63%)VitesseDépend de la complexitéUltra-rapideUsagePetit/Moyen volumeBig Data / Temps réelInterfaceSupportée (GUI)Script / APIStructure du projetPlaintext.
+# Max-K Coverage Optimization
+
+A specialized optimization toolkit that solves the **Maximum K-Coverage problem** using two distinct approaches: an **Exact MIP Solver (Gurobi)** for mathematical optimality and a **Fast Greedy Algorithm (KDTree)** for large-scale spatial datasets.
+
+---
+
+## Project Overview
+
+This project addresses the challenge of selecting a limited number of resources ($k$) to provide the maximum possible coverage for a given population or set of points.
+
+Instead of a single fixed method, the toolkit offers:
+1. **Gurobi Integration:** A robust mathematical model for guaranteed optimal solutions.
+2. **Spatial Heuristics:** A high-speed greedy implementation optimized with KDTree for millions of coordinates.
+3. **Interactive GUI:** A graphical interface to manage parameters and visualize results easily.
+
+This ensures **precision for small-to-medium problems** and **extreme scalability for Big Data**.
+
+---
+
+## Key Features
+
+- Exact Integer Programming (MIP) with **Gurobi**
+- High-speed greedy search using **scipy.spatial.KDTree**
+- Interactive Desktop GUI (**Tkinter**)
+- Seamless CSV data integration (`population.csv`, `candidates.csv`)
+- Performance metrics (Execution time & Coverage score)
+- Modular & clean architecture
+
+---
+
+## Architecture
+```
+max-k-coverage-optimization/
+│
 ├── src/
-│   ├── gurobi_maxkcover.py  # Moteur d'optimisation MIP
-│   ├── greedy_fast.py       # Algorithme glouton optimisé
-│   ├── gui_gurobi.py        # Interface graphique utilisateur
-│   ├── candidates.csv       # Données des sites candidats
-│   └── population.csv       # Données de la population à couvrir
-├── requirements.txt         # Liste des dépendances Python
+│   ├── gurobi_maxkcover.py  # Gurobi MIP model & optimization logic
+│   ├── greedy_fast.py       # KDTree-based greedy algorithm
+│   ├── gui_gurobi.py        # Tkinter Graphical User Interface
+│   │
+│   ├── candidates.csv       # Dataset: Potential site coordinates
+│   └── population.csv       # Dataset: Population/Points to cover
+│
+├── env/                     # Virtual environment
+│
+├── requirements.txt         # Project dependencies
 └── README.md                # Documentation
-Résultats attendusLe programme affiche les indices des candidats sélectionnés, le nombre total d'individus ou de points couverts, ainsi que le temps d'exécution. L'interface graphique permet de visualiser ces résultats de manière interactive.
+```
+---
+
+## How It Works (Optimization Flow)
+
+1. **Data Loading:** The system reads coordinates from `candidates.csv` and `population.csv`.
+2. **Method Selection:**
+   - **Gurobi:** Builds a binary decision matrix to find the absolute maximum coverage.
+   - **Greedy:** Iteratively selects the best candidate by searching neighbors via KDTree.
+3. **Constraints:** Both methods respect the $k$ limit (maximum number of sites to open).
+4. **Output:** Returns selected indices, total coverage score, and solver logs.
+
+---
+
+## Installation
+
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/Narimane-Mezned/max-k-coverage-optimization.git
+```
+2️⃣ Create virtual environment
+```Bash
+python -m venv env
+source env/bin/activate      # Linux / Mac
+env\Scripts\activate         # Windows
+```
+3️⃣ Install dependencies
+```Bash
+pip install -r requirements.txt
+```
+▶️ Run the Application
+To launch the interactive GUI:
+```Bash
+python src/gui_gurobi.py
+```
+Example Usage
+Exact Solution (Gurobi)
+```Bash
+from src.gurobi_maxkcover import solve_max_k_coverage
+# Load your data and solve
+selected, coverage = solve_max_k_coverage(elements, sets, k=5)
+print(f"Optimal sites: {selected}")
+```
+Fast Solution (Greedy + KDTree)
+```Bash
+from src.greedy_fast import FastGreedyCoverage
+# Initialize with spatial radius
+solver = FastGreedyCoverage(points, radius=0.5)
+indices = solver.fit(k=5)
+```
+
+## Technologies Used
+- Python 3.8+
+
+- Gurobi Optimizer (Mathematical Solver)
+
+- Scipy (Spatial KDTree)
+
+- Pandas / NumPy (Data processing)
+
+## Notes
+- Gurobi License: A valid license (Academic or Commercial) is required to run the MIP solver.
+
+- Data Format: CSV files should contain coordinate columns (lat, lon) for processing.
+
+- Scalability: For datasets exceeding 100k points, the Greedy method is recommended.
